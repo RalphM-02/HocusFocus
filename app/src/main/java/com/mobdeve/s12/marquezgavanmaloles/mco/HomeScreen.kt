@@ -266,6 +266,7 @@ fun AddTask(onDismiss: () -> Unit){
                     }
                     else{
                         val newTask = Task(0, title, description, priority, dueDate!!, dueTime!!, rewardTitle)
+                        // TODO: Add to db 
                         Log.d("TAG", "Task Added")
                         onDismiss()
                     }
