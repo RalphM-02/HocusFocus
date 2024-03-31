@@ -1,9 +1,11 @@
 package com.mobdeve.s12.marquezgavanmaloles.mco
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,14 +49,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.MCOTheme
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.lightGreen
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.midtoneGray
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AndroidThreeTen.init(this)
         setContent {
             MCOTheme {
                 // A surface container using the 'background' color from the theme
@@ -132,6 +137,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Main(){
     val navController = rememberNavController()
