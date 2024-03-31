@@ -137,6 +137,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Preview
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Main(){
