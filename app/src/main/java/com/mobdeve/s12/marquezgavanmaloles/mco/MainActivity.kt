@@ -142,7 +142,7 @@ class MainActivity : ComponentActivity() {
 fun Main(){
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routes.HOME_SCREEN) {
+    NavHost(navController = navController, startDestination = Routes.WELCOME_SCREEN) {
         composable(Routes.WELCOME_SCREEN) { Welcome( /* ... */ ) }
         composable(Routes.HOME_SCREEN) { Home( /* ... */ ) }
     }

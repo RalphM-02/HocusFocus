@@ -68,10 +68,21 @@ data class BottomNavigationItem(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Home(){
-    Row {
-        //TaskContainer()
-        // TODO: Task Lazy Column
+    val taskList = listOf(
+        Task(1,"Title", "desc", "Low", LocalDate.now(), LocalTime.now(), "reward")
+    )
+    val taskListState by remember { mutableStateOf(taskList) }
+    //TaskContainer()
+    // TODO: Task Lazy Column
+    LazyColumn {
+        item{
+            Text(text = "Task 1")
+        }
+        items(taskListState.size){
+            Text(text = "Task: $it")
+        }
     }
+
     Row {
         Column(
             modifier = Modifier
@@ -86,10 +97,10 @@ fun Home(){
                 mutableStateOf(false)
             }
             if (showAddTask){
-                AddTask(onDismiss = {showAddTask = false})
+                AddTask(taskListState, onDismiss = {showAddTask = false})
             }
             ExtendedFloatingActionButton(
-                onClick = { showAddTask = true },
+                onClick = { taskListState + Task(1,"Title", "desc", "Low", LocalDate.now(), LocalTime.now(), "reward") },
                 modifier = Modifier
                     .padding(20.dp)
                     .width(400.dp)
@@ -106,7 +117,7 @@ fun Home(){
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun AddTask(onDismiss: () -> Unit){
+fun AddTask(taskList: List<Task>, onDismiss: () -> Unit){
     Dialog(
         onDismissRequest =  onDismiss
     ) {
@@ -117,32 +128,6 @@ fun AddTask(onDismiss: () -> Unit){
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
         ){
-            /*val calendarState = rememberUseCaseState()
-            val clockState = rememberUseCaseState()
-            var selectedDate: LocalDate? = null
-            var selectedHours: Int? = null
-            var selectedMinutes: Int? = null
-            CalendarDialog(
-                state = calendarState,
-                config = CalendarConfig(monthSelection = true, yearSelection = true, style = CalendarStyle.WEEK),
-                selection = CalendarSelection.Date{date ->
-                    selectedDate = date
-                }
-            )
-            ClockDialog(state = clockState, selection = ClockSelection.HoursMinutes{hours, minutes->
-                selectedHours = hours
-                selectedMinutes = minutes
-            })
-            Button(onClick = { calendarState.show() }) {
-                Text(text = "Add Date")
-            }
-            Button(onClick = { calendarState.show() }) {
-                Text(text = "Add Time")
-            }
-            Row {
-                Text(text = "Due Date")
-                Text(text = "$selectedDate $selectedHours:$selectedMinutes")
-            }*/
             var title by remember { mutableStateOf("Untitled") }
             var description by remember { mutableStateOf("None") }
             var priority by remember { mutableStateOf("Low")}
@@ -266,8 +251,8 @@ fun AddTask(onDismiss: () -> Unit){
                     }
                     else{
                         val newTask = Task(0, title, description, priority, dueDate!!, dueTime!!, rewardTitle)
-                        // TODO: Add to db 
-                        Log.d("TAG", "Task Added")
+                        // TODO: Add to db
+                        taskList + newTask
                         onDismiss()
                     }
                 }) {
@@ -308,9 +293,10 @@ fun TaskCard(task: Task) {
 
 @Composable
 fun TaskContainer(taskList: List<Task>){
+    // TODO: Tasks List
     LazyColumn{
         items(taskList.size){i ->
-            TaskCard(task = taskList[i])
+            TaskCard(taskList[i])
         }
     }
 }
