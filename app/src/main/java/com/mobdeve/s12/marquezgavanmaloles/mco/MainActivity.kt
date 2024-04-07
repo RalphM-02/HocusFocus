@@ -152,6 +152,6 @@ fun Main(dbHelper: DatabaseHelper,navController: NavHostController){
     NavHost(navController = navController, startDestination = Routes.HOME_SCREEN) {
         composable(Routes.WELCOME_SCREEN) { Welcome( /* ... */ ) }
         composable(Routes.HOME_SCREEN) { Home( dbHelper ) }
-        composable(Routes.ADD_TASK) { AddTask() }
+        composable(Routes.ADD_TASK) { AddTask(dbHelper) }
     }
 }
