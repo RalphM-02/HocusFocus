@@ -28,7 +28,7 @@ data class BottomNavigationItem(
 fun Home(){
     Row(modifier = Modifier.height(660.dp).border(border = BorderStroke(2.dp, Color.Black))) {
         LazyColumn{
-            items(50){
+            items(20){
                 Text(text = "Item $it", modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp), textAlign = TextAlign.Center)
             }
         }

@@ -43,14 +43,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.mobdeve.s12.marquezgavanmaloles.mco.model.DatabaseHelper
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.MCOTheme
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.lightGreen
 
 class MainActivity : ComponentActivity() {
+    private lateinit var dbHelper: DatabaseHelper
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        dbHelper = DatabaseHelper(this)
         AndroidThreeTen.init(this)
         setContent {
             val navController = rememberNavController()
