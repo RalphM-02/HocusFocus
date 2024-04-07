@@ -37,15 +37,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.DatabaseHelper
+import com.mobdeve.s12.marquezgavanmaloles.mco.model.Task
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.MCOTheme
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.lightGreen
+import java.time.LocalDate
+import java.time.LocalTime
 
 class MainActivity : ComponentActivity() {
     private lateinit var dbHelper: DatabaseHelper
@@ -53,7 +55,6 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         dbHelper = DatabaseHelper(this)
         AndroidThreeTen.init(this)
         setContent {
@@ -125,7 +126,7 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxWidth()
                             ){
 
-                                Main(navController)
+                                Main(dbHelper, navController)
                             }
                         }
                     }
@@ -147,10 +148,10 @@ fun getRouteForIndex(index: Int): String{
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Main(navController: NavHostController){
+fun Main(dbHelper: DatabaseHelper,navController: NavHostController){
     NavHost(navController = navController, startDestination = Routes.HOME_SCREEN) {
         composable(Routes.WELCOME_SCREEN) { Welcome( /* ... */ ) }
-        composable(Routes.HOME_SCREEN) { Home( /* ... */ ) }
+        composable(Routes.HOME_SCREEN) { Home( dbHelper ) }
         composable(Routes.ADD_TASK) { AddTask() }
     }
 }
