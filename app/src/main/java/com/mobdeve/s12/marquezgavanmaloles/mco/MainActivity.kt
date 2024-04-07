@@ -6,27 +6,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -34,8 +29,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,24 +36,29 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.mobdeve.s12.marquezgavanmaloles.mco.model.DatabaseHelper
+import com.mobdeve.s12.marquezgavanmaloles.mco.model.Task
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.MCOTheme
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.lightGreen
-import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.midtoneGray
+import java.time.LocalDate
+import java.time.LocalTime
 
 class MainActivity : ComponentActivity() {
+    private lateinit var dbHelper: DatabaseHelper
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        dbHelper = DatabaseHelper(this)
         AndroidThreeTen.init(this)
         setContent {
+            val navController = rememberNavController()
             MCOTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -74,6 +72,11 @@ class MainActivity : ComponentActivity() {
                             unselectedIcon = Icons.Outlined.Home,
                         ),
                         BottomNavigationItem(
+                            title = "Add Task",
+                            selectedIcon = Icons.Filled.Add,
+                            unselectedIcon = Icons.Outlined.Add,
+                        ),
+                        BottomNavigationItem(
                             title = "Rewards",
                             selectedIcon = Icons.Filled.CheckCircle,
                             unselectedIcon = Icons.Outlined.CheckCircle,
@@ -82,11 +85,6 @@ class MainActivity : ComponentActivity() {
                             title = "Profile",
                             selectedIcon = Icons.Filled.AccountCircle,
                             unselectedIcon = Icons.Outlined.AccountCircle,
-                        ),
-                        BottomNavigationItem(
-                            title = "Settings",
-                            selectedIcon = Icons.Filled.Settings,
-                            unselectedIcon = Icons.Outlined.Settings,
                         )
                     )
                     var selectedItemIndex by rememberSaveable {
@@ -100,7 +98,7 @@ class MainActivity : ComponentActivity() {
                                         selected = selectedItemIndex == index,
                                         onClick = {
                                             selectedItemIndex = index
-                                            // TODO: Navigate to page
+                                            navController.navigate(getRouteForIndex(selectedItemIndex))
                                         },
                                         icon = {
                                             Icon(
@@ -127,7 +125,8 @@ class MainActivity : ComponentActivity() {
                             Row(modifier = Modifier
                                 .fillMaxWidth()
                             ){
-                                Main()
+
+                                Main(dbHelper, navController)
                             }
                         }
                     }
@@ -137,14 +136,22 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+fun getRouteForIndex(index: Int): String{
+    return when(index){
+        0 -> Routes.HOME_SCREEN
+        1 -> Routes.ADD_TASK
+        2 -> Routes.WELCOME_SCREEN
+        3 -> Routes.PROFILE_SCREEN
+        else -> Routes.HOME_SCREEN
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Main(){
-    val navController = rememberNavController()
-
+fun Main(dbHelper: DatabaseHelper,navController: NavHostController){
     NavHost(navController = navController, startDestination = Routes.HOME_SCREEN) {
         composable(Routes.WELCOME_SCREEN) { Welcome( /* ... */ ) }
-        composable(Routes.HOME_SCREEN) { Home( /* ... */ ) }
+        composable(Routes.HOME_SCREEN) { Home( dbHelper ) }
+        composable(Routes.ADD_TASK) { AddTask(dbHelper) }
     }
-
 }
