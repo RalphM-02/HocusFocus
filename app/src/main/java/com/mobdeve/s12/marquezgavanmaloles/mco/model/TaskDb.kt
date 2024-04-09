@@ -102,4 +102,13 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         db.close()
         return tasksList
     }
+
+    fun deleteTask(taskId: Int){
+        val db = writableDatabase
+        val selection = "${DatabaseContract.TaskEntry.COLUMN_ID} = ?"
+        val selectionArgs = arrayOf(taskId.toString())
+        db.delete(DatabaseContract.TaskEntry.TABLE_NAME, selection, selectionArgs)
+        Log.d("TAG", "Deleted Task with ID: $taskId")
+        db.close()
+    }
 }

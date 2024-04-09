@@ -14,11 +14,17 @@ class TasksViewModel(private val databaseHelper: DatabaseHelper): ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun insertTask(task: Task){
         databaseHelper.insertTask(task)
-        databaseHelper.getAllTasks()
+        tasks = databaseHelper.getAllTasks()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getAllTasks(){
+        tasks = databaseHelper.getAllTasks()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun deleteTask(taskId: Int){
+        databaseHelper.deleteTask(taskId)
         tasks = databaseHelper.getAllTasks()
     }
 }

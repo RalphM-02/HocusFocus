@@ -3,9 +3,7 @@ package com.mobdeve.s12.marquezgavanmaloles.mco
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,16 +18,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.DatabaseHelper
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.Task
@@ -47,30 +42,27 @@ data class BottomNavigationItem(
 fun Home(dbHelper: DatabaseHelper){
     val viewModel = TasksViewModel(dbHelper)
     viewModel.getAllTasks()
-    val tasks = viewModel.tasks
+    val taskList = viewModel.tasks
+    val tasks = remember { mutableStateListOf<Task>() }
+    tasks += taskList
     Log.d("TAG", "${viewModel.tasks.size}")
     Row(modifier = Modifier
         .height(660.dp)
         ) {
         LazyColumn{
             items(tasks.size){
-                TaskCard(tasks[it])
+                TaskCard(tasks[it], onDeleteTask = {id ->
+                    viewModel.deleteTask(id)
+                    tasks -= tasks[it]
+                })
             }
         }
     }
-//    Button(onClick = {
-//        val task = Task("test", "test", "test", "test", "test", "reward")
-//        viewModel.insertTask(task)
-//        tasks + task
-//    }) {
-//        Icon(Icons.Filled.Add, contentDescription = "Add Task")
-//    }
 }
 
 @Composable
-fun TaskCard(task: Task){
+fun TaskCard(task: Task, onDeleteTask: (Int) -> Unit){
     // TODO: make task card
-    var offset by remember { mutableFloatStateOf(0f) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,25 +84,10 @@ fun TaskCard(task: Task){
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(5.dp)
                 )
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { onDeleteTask(task.id) }) {
                     Icon(Icons.Outlined.Check, contentDescription = "Finish")
                 }
             }
         }
     }
-}
-
-//@RequiresApi(Build.VERSION_CODES.O)
-//@Preview
-//@Composable
-//fun HomePreview(){
-//    Surface{
-//        Home()
-//    }
-//}
-
-@Preview
-@Composable
-fun TaskCardPrev(){
-    TaskCard(Task("Do this", "description description description description description description description", "low", "69-69-6969", "69:69", "1 hr break"))
 }
