@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.mobdeve.s12.marquezgavanmaloles.mco.model.CalendarHelper
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.DatabaseHelper
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.Task
 
@@ -39,11 +40,12 @@ data class BottomNavigationItem(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Home(dbHelper: DatabaseHelper){
-    val viewModel = TasksViewModel(dbHelper)
+fun Home(dbHelper: DatabaseHelper, calendarHelper: CalendarHelper){
+    val viewModel = TasksViewModel(dbHelper, calendarHelper)
     viewModel.getAllTasks()
     val taskList = viewModel.tasks
     val tasks = remember { mutableStateListOf<Task>() }
+    tasks.clear()
     tasks += taskList
     Log.d("TAG", "${viewModel.tasks.size}")
     Row(modifier = Modifier
