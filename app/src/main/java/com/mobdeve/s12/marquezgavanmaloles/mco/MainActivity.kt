@@ -158,8 +158,9 @@ fun getRouteForIndex(index: Int): String{
 fun Main(dbHelper: DatabaseHelper, calendarHelper: CalendarHelper, navController: NavHostController, dataStore: DataStoreRepository, registered: Boolean){
     NavHost(navController = navController, startDestination = if (registered) { Routes.HOME_SCREEN } else Routes.WELCOME_SCREEN) {
         composable(Routes.WELCOME_SCREEN) { Welcome(navController, dataStore) }
-        composable(Routes.HOME_SCREEN) { Home( dbHelper, calendarHelper ) }
+        composable(Routes.HOME_SCREEN) { Home( dbHelper, calendarHelper, dataStore ) }
         composable(Routes.ADD_TASK) { AddTask(dbHelper, calendarHelper) }
         composable(Routes.CALENDAR_SCREEN) { CalendarScreen() }
+        composable(Routes.PROFILE_SCREEN){ Profile(navController, dataStore, registered) }
     }
 }

@@ -18,8 +18,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -27,8 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.CalendarHelper
+import com.mobdeve.s12.marquezgavanmaloles.mco.model.DataStoreRepository
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.DatabaseHelper
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.Task
+import kotlinx.coroutines.launch
 
 
 data class BottomNavigationItem(
@@ -40,7 +44,9 @@ data class BottomNavigationItem(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Home(dbHelper: DatabaseHelper, calendarHelper: CalendarHelper){
+fun Home(dbHelper: DatabaseHelper, calendarHelper: CalendarHelper, dataStore: DataStoreRepository){
+    val scope = rememberCoroutineScope()
+    var completed = dataStore.getCompleted.collectAsState(initial = 0).value
     val viewModel = TasksViewModel(dbHelper, calendarHelper)
     viewModel.getAllTasks()
     val taskList = viewModel.tasks
@@ -53,10 +59,16 @@ fun Home(dbHelper: DatabaseHelper, calendarHelper: CalendarHelper){
         ) {
         LazyColumn{
             items(tasks.size){
-                TaskCard(tasks[it], onDeleteTask = {id ->
-                    viewModel.deleteTask(id)
-                    tasks -= tasks[it]
-                })
+                if (completed != null) {
+                    TaskCard(tasks[it], onDeleteTask = {id ->
+                        viewModel.deleteTask(id)
+                        tasks -= tasks[it]
+                        completed += 1
+                        scope.launch {
+                            dataStore.saveCompleted(completed)
+                        }
+                    })
+                }
             }
         }
     }
