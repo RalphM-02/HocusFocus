@@ -5,4 +5,5 @@ object Routes {
     const val HOME_SCREEN = "HOME_SCREEN"
     const val ADD_TASK = "ADD_TASK"
     const val PROFILE_SCREEN = "PROFILE_SCREEN"
+    const val CALENDAR_SCREEN = "CALENDAR_SCREEN"
 }

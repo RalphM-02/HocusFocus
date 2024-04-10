@@ -35,6 +35,7 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockSelection
+import com.mobdeve.s12.marquezgavanmaloles.mco.model.CalendarHelper
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.DatabaseHelper
 import com.mobdeve.s12.marquezgavanmaloles.mco.model.Task
 import com.mobdeve.s12.marquezgavanmaloles.mco.ui.theme.lightGreen
@@ -43,8 +44,8 @@ import java.time.LocalTime
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun AddTask(dbHelper: DatabaseHelper){
-    val viewModel = TasksViewModel(dbHelper)
+fun AddTask(dbHelper: DatabaseHelper, calendarHelper: CalendarHelper){
+    val viewModel = TasksViewModel(dbHelper, calendarHelper)
     var title by remember { mutableStateOf("Untitled") }
     var description by remember { mutableStateOf("None") }
     var priority by remember { mutableStateOf("Low")}
